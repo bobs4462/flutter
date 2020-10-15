@@ -61,9 +61,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: EnglishEssay
-      fonts:
-        - asset: assets/fonts/english_essay.ttf 
     - family: Chilanka
       fonts:
         - asset: assets/fonts/Chilanka-Regular.ttf 

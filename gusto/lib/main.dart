@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gusto/widgets/screens/categories.dart';
+import 'package:gusto/widgets/screens/categories_screen.dart';
+import 'package:gusto/widgets/screens/meals_screen.dart';
+import 'package:gusto/widgets/screens/meal_details.dart';
 
 void main() {
   runApp(GustoApp());
@@ -24,13 +26,18 @@ class GustoApp extends StatelessWidget {
                 color: Color.fromRGBO(90, 45, 180, 0.7),
               ),
               headline6: TextStyle(
-                fontSize: 20,
+                fontSize: 27,
                 fontFamily: 'Piazzolla',
+                fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic,
               ),
             ),
       ),
       home: CategoriesScreen(),
+      routes: {
+        MealsScreen.route: (ctx) => MealsScreen(),
+        MealDetailsScreen.route: (ctx) => MealDetailsScreen(),
+      },
     );
   }
 }
