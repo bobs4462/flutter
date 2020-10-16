@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gusto/widgets/screens/categories_screen.dart';
+import 'package:gusto/widgets/screens/settings.dart';
+import 'package:gusto/widgets/screens/tabs.dart';
 import 'package:gusto/widgets/screens/meals_screen.dart';
 import 'package:gusto/widgets/screens/meal_details.dart';
 
@@ -33,9 +35,11 @@ class GustoApp extends StatelessWidget {
               ),
             ),
       ),
-      home: CategoriesScreen(),
+      home: TabsScreenBottom(),
       routes: {
         MealsScreen.route: (ctx) => MealsScreen(),
+        SettingsScreen.route: (ctx) => SettingsScreen(),
+        CategoriesScreen.route: (ctx) => CategoriesScreen(),
         MealDetailsScreen.route: (ctx) => MealDetailsScreen(),
       },
     );
