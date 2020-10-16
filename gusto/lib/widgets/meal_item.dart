@@ -4,7 +4,8 @@ import 'package:gusto/widgets/screens/meal_details.dart';
 
 class MealItem extends StatelessWidget {
   final Meal meal;
-  MealItem(this.meal);
+  final Function removeItem;
+  MealItem({this.meal, this.removeItem});
   String get complexity {
     switch (this.meal.complexity) {
       case Complexity.Simple:
@@ -37,7 +38,11 @@ class MealItem extends StatelessWidget {
       arguments: {
         'meal': meal,
       },
-    );
+    ).then((result) {
+      if (result != null) {
+        removeItem(result);
+      }
+    });
   }
 
   @override

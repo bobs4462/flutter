@@ -34,7 +34,7 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           onTap: () {
-            Navigator.of(ctx).pushNamed(TabsScreenBottom.route);
+            Navigator.of(ctx).pushReplacementNamed(TabsScreenBottom.route);
           },
         ),
         ListTile(
@@ -48,7 +48,7 @@ class MainDrawer extends StatelessWidget {
             ),
           ),
           onTap: () {
-            Navigator.of(ctx).pushNamed(SettingsScreen.route);
+            Navigator.of(ctx).pushReplacementNamed(SettingsScreen.route);
           },
         ),
       ]),

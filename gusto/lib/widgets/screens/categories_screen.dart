@@ -5,6 +5,7 @@ import 'package:gusto/widgets/category_item.dart';
 
 class CategoriesScreen extends StatelessWidget {
   static final String route = '/categories';
+
   @override
   Widget build(BuildContext context) {
     return GridView(

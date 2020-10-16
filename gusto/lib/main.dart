@@ -4,17 +4,54 @@ import 'package:gusto/widgets/screens/settings.dart';
 import 'package:gusto/widgets/screens/tabs.dart';
 import 'package:gusto/widgets/screens/meals_screen.dart';
 import 'package:gusto/widgets/screens/meal_details.dart';
+import 'package:gusto/models/meal.dart';
+import 'package:gusto/data/dummy.dart';
 
 void main() {
   runApp(GustoApp());
 }
 
-class GustoApp extends StatelessWidget {
+class GustoApp extends StatefulWidget {
   static const String title = 'El-Gusto';
+
+  @override
+  _GustoAppState createState() => _GustoAppState();
+}
+
+class _GustoAppState extends State<GustoApp> {
+  Map<String, bool> _filters = {
+    'Gluten': false,
+    'Lactose': false,
+    'Vegan': false,
+    'Vegetarian': false,
+  };
+
+  List<Meal> meals = DUMMY_MEALS;
+  void _setFilters(Map<String, bool> filters) {
+    setState(() {
+      _filters = filters;
+      meals = DUMMY_MEALS.where((m) {
+        if (_filters['Gluten'] && !m.isGlutenFree) {
+          return false;
+        }
+        if (_filters['Lactose'] && !m.isLactoseFree) {
+          return false;
+        }
+        if (_filters['Vegan'] && !m.isVegan) {
+          return false;
+        }
+        if (_filters['Vegetarian'] && !m.isVegetarian) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext ctx) {
     return MaterialApp(
-      title: title,
+      title: GustoApp.title,
       theme: ThemeData(
         primarySwatch: Colors.amber,
         accentColor: Colors.pink,
@@ -37,8 +74,9 @@ class GustoApp extends StatelessWidget {
       ),
       home: TabsScreenBottom(),
       routes: {
-        MealsScreen.route: (ctx) => MealsScreen(),
-        SettingsScreen.route: (ctx) => SettingsScreen(),
+        MealsScreen.route: (ctx) => MealsScreen(meals),
+        SettingsScreen.route: (ctx) =>
+            SettingsScreen(setFilters: _setFilters, filters: _filters),
         CategoriesScreen.route: (ctx) => CategoriesScreen(),
         MealDetailsScreen.route: (ctx) => MealDetailsScreen(),
       },
