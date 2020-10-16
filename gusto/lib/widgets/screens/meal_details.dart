@@ -3,6 +3,9 @@ import 'package:gusto/models/meal.dart';
 
 class MealDetailsScreen extends StatelessWidget {
   static final route = '/meal-details-screen';
+  final Function toggleFavorite;
+  final Function isFavorite;
+  MealDetailsScreen({this.toggleFavorite, this.isFavorite});
   Widget buildSectionTitle({String title, BuildContext ctx}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 11),
@@ -90,9 +93,11 @@ class MealDetailsScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(ctx).pop(meal.id);
+          toggleFavorite(meal);
         },
-        child: Icon(Icons.delete),
+        child: isFavorite(meal)
+            ? Icon(Icons.favorite)
+            : Icon(Icons.favorite_border),
       ),
     );
   }

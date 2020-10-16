@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gusto/widgets/screens/categories_screen.dart';
 import 'package:gusto/widgets/screens/settings.dart';
 import 'package:gusto/widgets/screens/tabs.dart';
 import 'package:gusto/widgets/screens/meals_screen.dart';
@@ -27,6 +26,7 @@ class _GustoAppState extends State<GustoApp> {
   };
 
   List<Meal> meals = DUMMY_MEALS;
+  List<Meal> favorites = [];
   void _setFilters(Map<String, bool> filters) {
     setState(() {
       _filters = filters;
@@ -46,6 +46,23 @@ class _GustoAppState extends State<GustoApp> {
         return true;
       }).toList();
     });
+  }
+
+  bool _isFavorite(Meal meal) {
+    return favorites.contains(meal);
+  }
+
+  void _toggleFavorite(Meal meal) {
+    final int index = favorites.indexWhere((m) => m.id == meal.id);
+    if (index > -1) {
+      setState(() {
+        favorites.removeAt(index);
+      });
+    } else {
+      setState(() {
+        favorites.add(meal);
+      });
+    }
   }
 
   @override
@@ -72,13 +89,15 @@ class _GustoAppState extends State<GustoApp> {
               ),
             ),
       ),
-      home: TabsScreenBottom(),
+      home: TabsScreenBottom(favorites),
       routes: {
         MealsScreen.route: (ctx) => MealsScreen(meals),
         SettingsScreen.route: (ctx) =>
             SettingsScreen(setFilters: _setFilters, filters: _filters),
-        CategoriesScreen.route: (ctx) => CategoriesScreen(),
-        MealDetailsScreen.route: (ctx) => MealDetailsScreen(),
+        MealDetailsScreen.route: (ctx) => MealDetailsScreen(
+              toggleFavorite: _toggleFavorite,
+              isFavorite: _isFavorite,
+            ),
       },
     );
   }

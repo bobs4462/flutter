@@ -50,7 +50,6 @@ class _MealsScreenState extends State<MealsScreen> {
             itemBuilder: (ctx, index) {
               return MealItem(
                 meal: meals[index],
-                removeItem: removeItem,
               );
             },
             itemCount: meals.length),
