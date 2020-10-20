@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shopping/providers/product.dart';
+import 'package:shopping/providers/products.dart';
+import 'package:shopping/screens/product_editor.dart';
 
 class UserProductItem extends StatelessWidget {
   final Product product;
@@ -16,12 +19,20 @@ class UserProductItem extends StatelessWidget {
         child: Row(children: [
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: null,
+            onPressed: () => Navigator.of(context).pushNamed(
+              ProductEditorScreen.route,
+              arguments: product,
+            ),
             color: Theme.of(context).primaryColor,
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: null,
+            onPressed: () {
+              Provider.of<Products>(
+                context,
+                listen: false,
+              ).deleteProduct(product.id);
+            },
             color: Theme.of(context).errorColor,
           ),
         ]),
