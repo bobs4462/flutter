@@ -30,6 +30,15 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
+  void undoLastAddition(String productId) {
+    if (_items[productId].quantity > 1) {
+      _items[productId].quantity -= 1;
+    } else {
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
+
   void addItem({
     String productId,
     String title,

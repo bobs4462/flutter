@@ -78,7 +78,7 @@ class _OrderItemCardState extends State<OrderItemCard> {
                 ),
                 itemCount: widget.orderItem.cartItems.length,
               ),
-              height: min(widget.orderItem.cartItems.length * 20.0 + 10.0, 190),
+              height: min(widget.orderItem.cartItems.length * 20.0 + 50.0, 190),
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             ),
         ],

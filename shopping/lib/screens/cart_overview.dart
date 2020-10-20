@@ -74,6 +74,29 @@ class CartItemCard extends StatelessWidget {
     final Cart cart = Provider.of<Cart>(ctx, listen: false);
     return Dismissible(
       key: ValueKey(item.value.id),
+      confirmDismiss: (DismissDirection dd) {
+        return showDialog(
+          context: ctx,
+          builder: (ctx) => AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text('Confirm item removal from the cart'),
+            actions: [
+              FlatButton(
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(ctx).pop(true);
+                },
+              ),
+            ],
+          ),
+        );
+      },
       background: Container(
         color: Theme.of(ctx).errorColor,
         child: Icon(

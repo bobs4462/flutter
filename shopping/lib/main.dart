@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping/providers/cart.dart';
 import 'package:shopping/providers/orders.dart';
 import 'package:shopping/providers/products.dart';
 import 'package:shopping/screens/cart_overview.dart';
 import 'package:shopping/screens/order_overview.dart';
 import 'package:shopping/screens/product_details.dart';
+import 'package:shopping/screens/product_editor.dart';
 import 'package:shopping/screens/products_overview.dart';
-import 'package:shopping/providers/cart.dart';
+import 'package:shopping/screens/user_products.dart';
 
 void main() {
   runApp(ShoppingApp());
@@ -35,6 +37,8 @@ class ShoppingApp extends StatelessWidget {
           CartOverviewScreen.route: (ctx) => CartOverviewScreen(),
           ProductsOverviewScreen.route: (ctx) => ProductsOverviewScreen(),
           OrdersOverviewScreen.route: (ctx) => OrdersOverviewScreen(),
+          UserProductsScreen.route: (ctx) => UserProductsScreen(),
+          ProductEditorScreen.route: (ctx) => ProductEditorScreen(),
         },
       ),
     );

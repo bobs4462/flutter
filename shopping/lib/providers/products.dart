@@ -45,6 +45,10 @@ class Products with ChangeNotifier {
     // }
   }
 
+  int get itemCount {
+    return _items.length;
+  }
+
   Product getProductById(String id) {
     return _items.firstWhere((i) => i.id == id);
   }
