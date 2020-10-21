@@ -6,37 +6,43 @@ import 'package:provider/provider.dart';
 import 'package:shopping/providers/orders.dart';
 import 'package:shopping/widgets/drawer.dart';
 
-class OrdersOverviewScreen extends StatefulWidget {
+class OrdersOverviewScreen extends StatelessWidget {
   static final String route = '/orders/overview';
-
-  @override
-  _OrdersOverviewScreenState createState() => _OrdersOverviewScreenState();
-}
-
-class _OrdersOverviewScreenState extends State<OrdersOverviewScreen> {
-  var _isLoading = true;
-  @override
-  void initState() {
-    Provider.of<Orders>(context, listen: false)
-        .fetchOrders()
-        .then((_) => setState(() => _isLoading = false));
-    super.initState();
-  }
+//
+//   @override
+//   _OrdersOverviewScreenState createState() => _OrdersOverviewScreenState();
+// }
+//
+// class _OrdersOverviewScreenState extends State<OrdersOverviewScreen> {
+//   var _isLoading = true;
+//   @override
+//   void initState() {
+//     Provider.of<Orders>(context, listen: false)
+//         .fetchOrders()
+//         .then((_) => setState(() => _isLoading = false));
+//     super.initState();
+//   }
 
   @override
   Widget build(BuildContext context) {
-    final List<OrderItem> orders = Provider.of<Orders>(context).orders;
     return Scaffold(
       appBar: AppBar(
         title: Text('Orders overview'),
       ),
       drawer: MainDrawer(),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemBuilder: (ctx, i) => OrderItemCard(orders[i]),
-              itemCount: orders.length,
-            ),
+      body: FutureBuilder(
+          future: Provider.of<Orders>(context, listen: false).fetchOrders(),
+          builder: (ctx, futureState) {
+            return futureState.connectionState == ConnectionState.waiting
+                ? Center(child: CircularProgressIndicator())
+                : Consumer<Orders>(builder: (ctx, orderData, child) {
+                    return ListView.builder(
+                      itemBuilder: (ctx, i) =>
+                          OrderItemCard(orderData.orders[i]),
+                      itemCount: orderData.orders.length,
+                    );
+                  });
+          }),
     );
   }
 }
