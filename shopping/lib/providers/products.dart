@@ -6,8 +6,19 @@ import 'package:shopping/exceptions/http_exception.dart';
 import 'package:shopping/providers/product.dart';
 
 class Products with ChangeNotifier {
-  List<Product> _items = [];
+  static const String url = 'https://shopping-6434b.firebaseio.com/';
   // bool _favoritesOnly = false;
+  String authToken;
+  List<Product> _items = [];
+  void update(String authToken, List<Product> items) {
+    this.authToken = authToken;
+    this._items = items;
+  }
+
+  int get itemCount {
+    return _items.length;
+  }
+
   List<Product> get items {
     // if (_favoritesOnly) {
     //   return _items.where((i) => i.isFavorite).toList();
@@ -16,83 +27,10 @@ class Products with ChangeNotifier {
     // }
   }
 
-  int get itemCount {
-    return _items.length;
-  }
-
-  Product getProductById(String id) {
-    return _items.firstWhere((i) => i.id == id);
-  }
-
-  List<Product> showFavoritesOnly() {
-    return _items.where((i) => i.isFavorite).toList();
-  }
-
-  Future<void> editProduct(Product product) async {
-    final int index = _items.indexWhere((p) => p.id == product.id);
-    if (index > -1) {
-      await http.patch(
-        url + 'products/${product.id}.json',
-        body: json.encode({
-          'title': product.title,
-          'description': product.description,
-          'price': product.price,
-          'isFavorite': product.isFavorite,
-          'imageUrl': product.imageUrl,
-        }),
-      );
-      _items[index] = product;
-    }
-    notifyListeners();
-  }
-
-  Future<void> deleteProduct(String id) async {
-    final int index = _items.indexWhere((p) => p.id == id);
-    Product product = _items[index];
-    _items.removeAt(index);
-    http
-        .delete(
-      url + 'products/$id.json',
-    )
-        .then((response) {
-      if (response.statusCode >= 400) {
-        throw HttpException('Could not delete\n' + response.body);
-      }
-      product = null;
-    }).catchError((error) {
-      _items.insert(index, product);
-      throw error;
-    });
-    notifyListeners();
-  }
-
-  static const String url = 'https://shopping-6434b.firebaseio.com/';
-
-  Future<void> fetchProducts() async {
-    final response = await http.get(url + 'products.json');
-    final responseJson = json.decode(response.body) as Map<String, dynamic>;
-    if (responseJson == null) {
-      return;
-    }
-    List<Product> list = [];
-    responseJson.forEach((id, data) {
-      list.add(Product(
-        id: id,
-        title: data['title'],
-        price: data['price'],
-        imageUrl: data['imageUrl'],
-        description: data['description'],
-        isFavorite: data['isFavorite'],
-      ));
-    });
-    _items = list;
-    notifyListeners();
-  }
-
   Future<void> addProduct(Product product) {
     return http
         .post(
-      url + 'products.json',
+      url + 'products.json' + '?auth=$authToken',
       body: json.encode({
         'title': product.title,
         'description': product.description,
@@ -114,6 +52,73 @@ class Products with ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  Future<void> deleteProduct(String id) async {
+    final int index = _items.indexWhere((p) => p.id == id);
+    Product product = _items[index];
+    _items.removeAt(index);
+    http
+        .delete(
+      url + 'products/$id.json' + '?auth=$authToken',
+    )
+        .then((response) {
+      if (response.statusCode >= 400) {
+        throw HttpException('Could not delete\n' + response.body);
+      }
+      product = null;
+    }).catchError((error) {
+      _items.insert(index, product);
+      throw error;
+    });
+    notifyListeners();
+  }
+
+  Future<void> editProduct(Product product) async {
+    final int index = _items.indexWhere((p) => p.id == product.id);
+    if (index > -1) {
+      await http.patch(
+        url + 'products/${product.id}.json' + '?auth=$authToken',
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+          'imageUrl': product.imageUrl,
+        }),
+      );
+      _items[index] = product;
+    }
+    notifyListeners();
+  }
+
+  Future<void> fetchProducts() async {
+    final response = await http.get(url + 'products.json' + '?auth=$authToken');
+    final responseJson = json.decode(response.body) as Map<String, dynamic>;
+    if (responseJson == null) {
+      return;
+    }
+    List<Product> list = [];
+    responseJson.forEach((id, data) {
+      list.add(Product(
+        id: id,
+        title: data['title'],
+        price: data['price'],
+        imageUrl: data['imageUrl'],
+        description: data['description'],
+        isFavorite: data['isFavorite'],
+      ));
+    });
+    _items = list;
+    notifyListeners();
+  }
+
+  Product getProductById(String id) {
+    return _items.firstWhere((i) => i.id == id);
+  }
+
+  List<Product> showFavoritesOnly() {
+    return _items.where((i) => i.isFavorite).toList();
   }
   // void showAll() {}
 }

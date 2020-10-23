@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopping/providers/auth.dart';
 import 'package:shopping/providers/cart.dart';
-import 'package:shopping/screens/product_details.dart';
 import 'package:shopping/providers/product.dart';
+import 'package:shopping/screens/product_details.dart';
 
 class ProductItem extends StatelessWidget {
   @override
@@ -26,14 +27,16 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           leading: Consumer<Product>(
-            builder: (ctx, product, child) => IconButton(
-              icon: Icon(
-                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+            builder: (ctx, product, child) => Consumer<Auth>(
+              builder: (ctx, auth, child) => IconButton(
+                icon: Icon(
+                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                ),
+                onPressed: () {
+                  product.toggleFavorite(auth.token);
+                },
+                color: Theme.of(ctx).accentColor,
               ),
-              onPressed: () {
-                product.toggleFavorite();
-              },
-              color: Theme.of(ctx).accentColor,
             ),
           ),
           trailing: IconButton(

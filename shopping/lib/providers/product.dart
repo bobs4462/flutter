@@ -22,12 +22,12 @@ class Product with ChangeNotifier {
 
   static const String url = 'https://shopping-6434b.firebaseio.com/';
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String authToken) async {
     final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     try {
       final response = await http.patch(
-        url + 'product/$id.json',
+        url + 'products/$id.json' + '?auth=$authToken',
         body: json.encode({'isFavorite': isFavorite}),
       );
       if (response.statusCode >= 400) {
