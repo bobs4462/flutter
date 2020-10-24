@@ -22,6 +22,7 @@ class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
   String authToken;
+  String userId;
 
   List<OrderItem> get orders {
     return [..._orders];
@@ -30,7 +31,7 @@ class Orders with ChangeNotifier {
   Future<void> addOrder(List<CartItem> items, double total) {
     final date = DateTime.now();
     return http
-        .post(url + 'orders.json' + '?auth=$authToken',
+        .post(url + 'orders/$userId.json' + '?auth=$authToken',
             body: json.encode({
               'amount': total,
               'date': date.toIso8601String(),
@@ -55,7 +56,9 @@ class Orders with ChangeNotifier {
   }
 
   Future<void> fetchOrders() {
-    return http.get(url + 'orders.json' + '?auth=$authToken').then((response) {
+    return http
+        .get(url + 'orders/$userId.json' + '?auth=$authToken')
+        .then((response) {
       final Map<String, dynamic> ordersJson = json.decode(response.body);
       if (ordersJson == null) {
         return;
@@ -82,8 +85,9 @@ class Orders with ChangeNotifier {
     });
   }
 
-  void update(String authToken, List<OrderItem> orders) {
+  void update(String authToken, String userId, List<OrderItem> orders) {
     this._orders = orders;
+    this.userId = userId;
     this.authToken = authToken;
   }
 }

@@ -10,7 +10,7 @@ class UserProductsScreen extends StatelessWidget {
   static const String route = '/user/products';
   @override
   Widget build(BuildContext context) {
-    final Products products = Provider.of<Products>(context);
+    final Products products = Provider.of<Products>(context, listen: false);
     final List<Product> items = products.items;
     return Scaffold(
       appBar: AppBar(
@@ -25,22 +25,30 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: MainDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () {
-          return products.fetchProducts();
-        },
-        child: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: products.itemCount,
-            itemBuilder: (ctx, i) => Column(
-              children: [
-                UserProductItem(items[i]),
-                Divider(),
-              ],
-            ),
-          ),
-        ),
+      body: FutureBuilder(
+        future: products.fetchProducts(true),
+        builder: (ctx, spapshot) =>
+            spapshot.connectionState == ConnectionState.waiting
+                ? Center(child: CircularProgressIndicator())
+                : RefreshIndicator(
+                    onRefresh: () {
+                      return products.fetchProducts(true);
+                    },
+                    child: Consumer<Products>(
+                      builder: (ctx, prod, child) => Padding(
+                        padding: EdgeInsets.all(8),
+                        child: ListView.builder(
+                          itemCount: products.itemCount,
+                          itemBuilder: (ctx, i) => Column(
+                            children: [
+                              UserProductItem(items[i]),
+                              Divider(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
       ),
     );
   }

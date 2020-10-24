@@ -9,12 +9,8 @@ class Products with ChangeNotifier {
   static const String url = 'https://shopping-6434b.firebaseio.com/';
   // bool _favoritesOnly = false;
   String authToken;
+  String userId;
   List<Product> _items = [];
-  void update(String authToken, List<Product> items) {
-    this.authToken = authToken;
-    this._items = items;
-  }
-
   int get itemCount {
     return _items.length;
   }
@@ -35,8 +31,8 @@ class Products with ChangeNotifier {
         'title': product.title,
         'description': product.description,
         'price': product.price,
-        'isFavorite': product.isFavorite,
         'imageUrl': product.imageUrl,
+        'userId': userId,
       }),
     )
         .then(
@@ -83,7 +79,6 @@ class Products with ChangeNotifier {
           'title': product.title,
           'description': product.description,
           'price': product.price,
-          'isFavorite': product.isFavorite,
           'imageUrl': product.imageUrl,
         }),
       );
@@ -92,12 +87,20 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchProducts() async {
-    final response = await http.get(url + 'products.json' + '?auth=$authToken');
+  Future<void> fetchProducts([bool filterByUser = false]) async {
+    var response = await http.get(
+      url +
+          'products.json' +
+          '?auth=$authToken' +
+          (filterByUser ? '&orderBy="userId"&equalTo="$userId"' : ''),
+    );
     final responseJson = json.decode(response.body) as Map<String, dynamic>;
     if (responseJson == null) {
       return;
     }
+    response =
+        await http.get(url + 'userFavorites/$userId.json' + '?auth=$authToken');
+    final favorites = json.decode(response.body);
     List<Product> list = [];
     responseJson.forEach((id, data) {
       list.add(Product(
@@ -106,7 +109,7 @@ class Products with ChangeNotifier {
         price: data['price'],
         imageUrl: data['imageUrl'],
         description: data['description'],
-        isFavorite: data['isFavorite'],
+        isFavorite: favorites == null ? false : favorites['$id'] ?? false,
       ));
     });
     _items = list;
@@ -119,6 +122,12 @@ class Products with ChangeNotifier {
 
   List<Product> showFavoritesOnly() {
     return _items.where((i) => i.isFavorite).toList();
+  }
+
+  void update(String authToken, String userId, List<Product> items) {
+    this.authToken = authToken;
+    this.userId = userId;
+    this._items = items;
   }
   // void showAll() {}
 }
