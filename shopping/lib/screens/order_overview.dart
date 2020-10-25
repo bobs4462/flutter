@@ -59,25 +59,30 @@ class _OrderItemCardState extends State<OrderItemCard> {
   bool expanded = false;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(10),
-      child: Column(
-        children: [
-          ListTile(
-            title: Text('\$${widget.orderItem.amount}'),
-            subtitle: Text(
-              DateFormat('dd-MM-yyyy hh:mm').format(widget.orderItem.date),
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      height: expanded
+          ? min(widget.orderItem.cartItems.length * 20.0 + 150.0, 290)
+          : 125,
+      child: Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text('\$${widget.orderItem.amount}'),
+              subtitle: Text(
+                DateFormat('dd-MM-yyyy hh:mm').format(widget.orderItem.date),
+              ),
+              trailing: IconButton(
+                  icon: Icon(expanded ? Icons.expand_less : Icons.expand_more),
+                  onPressed: () {
+                    setState(() {
+                      expanded = !expanded;
+                    });
+                  }),
             ),
-            trailing: IconButton(
-                icon: Icon(expanded ? Icons.expand_less : Icons.expand_more),
-                onPressed: () {
-                  setState(() {
-                    expanded = !expanded;
-                  });
-                }),
-          ),
-          if (expanded)
-            Container(
+            AnimatedContainer(
+              duration: Duration(milliseconds: 500),
               child: ListView.builder(
                 itemBuilder: (ctx, i) => Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,10 +106,13 @@ class _OrderItemCardState extends State<OrderItemCard> {
                 ),
                 itemCount: widget.orderItem.cartItems.length,
               ),
-              height: min(widget.orderItem.cartItems.length * 20.0 + 50.0, 190),
+              height: expanded
+                  ? min(widget.orderItem.cartItems.length * 20.0 + 50.0, 190)
+                  : 0,
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
