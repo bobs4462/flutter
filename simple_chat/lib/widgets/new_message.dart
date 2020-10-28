@@ -10,13 +10,18 @@ class NewMessage extends StatefulWidget {
 class _NewMessageState extends State<NewMessage> {
   final _conroller = TextEditingController();
   var _message = '';
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
+    final userId = FirebaseAuth.instance.currentUser.uid;
+    final userData =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
     FirebaseFirestore.instance
         .collection('Chats/HD0UBwL33jJs6rxrpd4d/messages')
         .add({
       'text': _message,
       'timestamp': Timestamp.now(),
-      'userId': FirebaseAuth.instance.currentUser.uid,
+      'userId': userId,
+      'userName': userData['userName'],
+      'userImage': userData['image'],
     });
     _conroller.clear();
   }

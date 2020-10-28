@@ -21,6 +21,8 @@ class Messages extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: MessageBubble(
                   docs[i]['text'],
+                  docs[i]['userName'],
+                  docs[i]['userImage'],
                   docs[i]['userId'] == FirebaseAuth.instance.currentUser.uid,
                   key: ValueKey(docs[i].documentID),
                 )),
